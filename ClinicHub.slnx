@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ClinicHub.Api/ClinicHub.Api.csproj" />
+    <Project Path="src/ClinicHub.Application/ClinicHub.Application.csproj" />
+    <Project Path="src/ClinicHub.Domain/ClinicHub.Domain.csproj" />
+    <Project Path="src/ClinicHub.Infrastructure/ClinicHub.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ClinicHub.Tests/ClinicHub.Tests.csproj" />
+  </Folder>
+</Solution>

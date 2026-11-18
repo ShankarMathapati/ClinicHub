@@ -1,0 +1,82 @@
+<div class="page-head">
+  <h1>Appointments</h1>
+  <button type="button" (click)="refresh()">Refresh</button>
+</div>
+
+<div class="split">
+  <section class="card">
+    <h2>Book an appointment</h2>
+    <form class="stack" [formGroup]="form" (ngSubmit)="book()">
+      <label>
+        Patient
+        <select formControlName="patientId">
+          <option value="" disabled>Select a patient</option>
+          @for (p of patients(); track p.id) {
+            <option [value]="p.id">{{ p.lastName }}, {{ p.firstName }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Doctor
+        <select formControlName="doctorId">
+          <option value="" disabled>Select a doctor</option>
+          @for (d of doctors(); track d.id) {
+            <option [value]="d.id">{{ d.fullName }} ({{ d.specialty }})</option>
+          }
+        </select>
+      </label>
+      <div class="row">
+        <label>Date <input type="date" formControlName="date" /></label>
+        <label>Time <input type="time" formControlName="time" step="900" /></label>
+        <label>
+          Duration
+          <select formControlName="duration">
+            <option [ngValue]="15">15 min</option>
+            <option [ngValue]="30">30 min</option>
+            <option [ngValue]="45">45 min</option>
+            <option [ngValue]="60">60 min</option>
+          </select>
+        </label>
+      </div>
+      <label>Reason <input type="text" formControlName="reason" placeholder="Optional" /></label>
+      <button type="submit" class="primary" [disabled]="form.invalid">Book</button>
+    </form>
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+    @if (notice()) {
+      <p class="success" role="status">{{ notice() }}</p>
+    }
+  </section>
+
+  <section class="card">
+    <h2>Next 14 days</h2>
+    @if (loading()) {
+      <p class="muted">Loading…</p>
+    } @else {
+      @for (group of days(); track group.day) {
+        <h3 class="day">{{ group.day | date: 'EEEE, d MMM' }}</h3>
+        <ul class="list">
+          @for (a of group.items; track a.id) {
+            <li [class.dim]="a.status !== 'Scheduled'">
+              <div>
+                <strong>{{ a.startUtc | date: 'shortTime' }} – {{ a.endUtc | date: 'shortTime' }}</strong>
+                {{ a.patientName }}
+                <div class="muted">{{ a.doctorName }}@if (a.reason) { · {{ a.reason }} }</div>
+              </div>
+              <div class="row">
+                <span class="badge" [attr.data-status]="a.status">{{ a.status }}</span>
+                @if (a.status === 'Scheduled') {
+                  <button type="button" (click)="complete(a)">Complete</button>
+                  <button type="button" (click)="cancel(a)">Cancel</button>
+                }
+              </div>
+            </li>
+          }
+        </ul>
+      } @empty {
+        <p class="muted">No appointments in the next 14 days.</p>
+      }
+    }
+  </section>
+</div>
